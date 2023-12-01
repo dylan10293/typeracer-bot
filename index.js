@@ -18,7 +18,7 @@ const typeSlowly = async (page, selector, text, delay) => {
 
 // Function to perform the typing operation on a Typeracer page
 const typingOperation = async (page) => {
-	// Wait for the text box to be present
+	// Wait for the text box to be present and check additional conditions
 	await page.waitForFunction(
 		() => {
 			return (
@@ -44,6 +44,8 @@ const typingOperation = async (page) => {
 	const inputSelector =
 		'table > tbody > tr:nth-child(2) > td > table > tbody > tr:nth-child(2) > td > input';
 	await typeSlowly(page, inputSelector, text, getRandomInt(70, 100));
+
+	// Recursively call the typing operation (optional)
 	await typingOperation(page);
 };
 
@@ -54,7 +56,7 @@ const typeracer = async () => {
 		const browser = await puppeteer.launch({
 			headless: false,
 			args: ['--start-maximized', '--enable-automation'],
-			devtools: true,
+			// devtools: true,
 			defaultViewport: null,
 		});
 
