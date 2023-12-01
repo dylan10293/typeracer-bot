@@ -17,28 +17,34 @@ const typeSlowly = async (page, selector, text, delay) => {
 };
 
 // Function to perform the typing operation on a Typeracer page
-const typingOperation = async (page, text) => {
+const typingOperation = async (page) => {
 	// Wait for the text box to be present
 	await page.waitForFunction(
 		() => {
 			return (
 				document.querySelector(
 					'table > tbody > tr:nth-child(2) > td > table > tbody > tr:nth-child(1) > td > table > tbody > tr:nth-child(1) > td > div > div',
-				)?.innerText?.length && !document.querySelector('table input').disabled
+				)?.innerText?.length &&
+				!document.querySelector('table input').disabled &&
+				!document.querySelector('table.TypingLogReplayPlayer')
 			);
 		},
 		{ timeout: 0 },
 	);
 
+	// Extract text from the Typeracer page
+	const text = await page.evaluate(() => {
+		return document.querySelector(
+			'table > tbody > tr:nth-child(2) > td > table > tbody > tr:nth-child(1) > td > table > tbody > tr:nth-child(1) > td > div > div',
+		)?.innerText;
+	});
+	console.log('Found text box:', text);
+
 	// Type the text slowly into the input field
 	const inputSelector =
 		'table > tbody > tr:nth-child(2) > td > table > tbody > tr:nth-child(2) > td > input';
 	await typeSlowly(page, inputSelector, text, getRandomInt(70, 100));
-
-	// Reset the test variable
-	await page.evaluate(() => {
-		test = false;
-	});
+	await typingOperation(page);
 };
 
 // Main function to automate Typeracer
@@ -66,17 +72,8 @@ const typeracer = async () => {
 			{ timeout: 0 },
 		);
 
-		// Extract text from the Typeracer page
-		const text = await page.evaluate(() => {
-			return document.querySelector(
-				'table > tbody > tr:nth-child(2) > td > table > tbody > tr:nth-child(1) > td > table > tbody > tr:nth-child(1) > td > div > div',
-			)?.innerText;
-		});
-
-		console.log('Found text box:', text);
-
 		// Perform the typing operation
-		await typingOperation(page, text);
+		await typingOperation(page);
 	} catch (error) {
 		console.log('Error:', error);
 	}
