@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<script src="https://cdn.tailwindcss.com"></script>
+		<title>Typeracer Bot</title>
+		<!-- Add Electron script -->
+		<script>
+			const startBot = async () => {
+				// Get the WPM value from the input field
+				const wpmInput = document.getElementById('wpm');
+				const wpmValue = parseInt(wpmInput.value);
+
+				// Disable the button and change text to "Running"
+				const startButton = document.getElementById('startButton');
+				startButton.disabled = true;
+				startButton.textContent = 'Running...';
+
+				// Send the WPM value to Electron
+				const response = await window.versions.startBot({ wpm: wpmValue });
+				console.log(response); // prints out 'pong'
+
+				// Enable the button and reset text to "Start Bot"
+				startButton.disabled = false;
+				startButton.textContent = 'Start Bot';
+			}
+
+			const handleInputChange = () => {
+				const startButton = document.getElementById('startButton');
+				const wpmInput = document.getElementById('wpm');
+				// Disable the button if no text has been inputted
+				startButton.disabled = !wpmInput.value;
+			}
+		</script>
+	</head>
+	<body class="bg-zinc-900 text-white p-8">
+		<div class="max-w-md mx-auto bg-zinc-950 border border-orange-500 p-6 rounded-md shadow-md">
+			<h1 class="text-2xl font-semibold mb-4 text-orange-400">Typeracer Bot Control Panel</h1>
+
+			<!-- WPM Input -->
+			<div class="mb-4">
+				<label for="wpm" class="block text-sm font-medium text-orange-300"
+					>Enter WPM Speed:</label
+				>
+				<input
+					type="number"
+					id="wpm"
+					name="wpm"
+					class="mt-1 p-2 border rounded-md w-full bg-zinc-800 text-orange-300"
+					placeholder="e.g., 60"
+					oninput="handleInputChange()"
+				/>
+			</div>
+
+			<!-- Start Button -->
+			<button
+				id="startButton"
+				class="bg-orange-500 text-white px-4 py-2 rounded-md hover:bg-orange-600 focus:outline-none focus:ring focus:border-orange-300 disabled:opacity-50 disabled:bg-gray-500 disabled:text-gray-300"
+				onclick="startBot()"
+				disabled
+			>
+				Start Bot
+			</button>
+
+			<!-- How to Use Section -->
+			<div class="mt-8">
+				<h2 class="text-xl text-orange-300 font-semibold mb-2">How to Use:</h2>
+				<p class="text-zinc-300">
+					1. Enter the desired WPM speed in the input field.
+				</p>
+				<p class="text-zinc-300">
+					2. Click the "Start Bot" button to initiate the bot.
+				</p>
+				<p class="text-zinc-300">
+					3. You can now use this time to login if required.
+				</p>
+				<p class="text-zinc-300">
+					4. Navigate to a game and wait for the bot to do its thing.
+				</p>
+				<p class="text-zinc-300">
+					<b>Note:</b> Do not leave the game halfway. After the game has
+					notified you that you are done, you can resume with another game.
+				</p>
+			</div>
+			<div class="mt-2">
+				<h2 class="text-xl text-orange-300 font-semibold mb-2">How to Stop:</h2>
+				<p class="text-zinc-300">
+					For now just close and open the application
+				</p>
+			</div>
+		</div>
+	</body>
+</html>
